@@ -12,7 +12,6 @@ const App = () => {
     inputValue,
     setInputValue,
     isLoading,
-    error,
     messagesEndRef,
     inputRef,
     sendMessage,
@@ -39,7 +38,7 @@ const App = () => {
   return (
     <div className="flex flex-col h-screen bg-white">
       <Header onClear={clearChat} onExport={handleExport} />
-      <ErrorBanner error={error} />
+      <ErrorBanner />
       <MessageList 
         messages={messages} 
         isLoading={isLoading} 

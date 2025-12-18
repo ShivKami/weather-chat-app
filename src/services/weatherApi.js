@@ -23,7 +23,8 @@ export const sendMessageToAPI = async (userMessage) => {
   if (!response.ok) {
     const errorText = await response.text();
     console.error('Error response:', errorText);
-    throw new Error(`API Error: ${response.status} - ${errorText || response.statusText}`);
+    // Throw error with status code for better error handling
+    throw new Error(`API_ERROR_${response.status}`);
   }
 
   return response;
@@ -37,6 +38,6 @@ export const parseAPIResponse = async (response) => {
     const jsonData = JSON.parse(responseText);
     return jsonData.content || jsonData.text || jsonData.message || JSON.stringify(jsonData);
   } catch (e) {
-    return responseText;
+    return responseText || 'Weather information retrieved.';
   }
 };

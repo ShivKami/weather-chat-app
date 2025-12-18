@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { sendMessageToAPI, parseAPIResponse } from '../services/weatherApi';
 import { INITIAL_MESSAGE } from '../config/constants';
+import { getUserFriendlyErrorMessage, logError } from '../utils/errorHandler';
 
 export const useChat = () => {
   const [messages, setMessages] = useState([INITIAL_MESSAGE]);
@@ -50,15 +51,19 @@ export const useChat = () => {
       ));
 
     } catch (error) {
-      console.error('Full error:', error);
-      setError(error.message);
+      // Log technical error for developers (visible in browser console)
+      logError('useChat.sendMessage', error);
       
+      // Get user-friendly message
+      const userFriendlyMessage = getUserFriendlyErrorMessage(error);
+      
+      // Don't set error state (removes the error banner)
+      setError(null);
+      
+      // Update message with user-friendly error
       setMessages(prev => prev.map(msg => 
         msg.id === agentMsgId 
-          ? { 
-              ...msg, 
-              content: `❌ Error: ${error.message}\n\nPlease check:\n1. Your internet connection\n2. Your college roll number is correct\n3. The API endpoint is accessible` 
-            }
+          ? { ...msg, content: userFriendlyMessage }
           : msg
       ));
     } finally {
